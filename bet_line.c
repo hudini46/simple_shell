@@ -1,10 +1,10 @@
 #include "shell.h"
 
 /**
- * getline - Read a line of input from thee user.
+ * bet_line - Read a line of input from thee user.
  * Return: The line of input entered by thee user.
  */
-char *getline()
+char *bet_line()
 {
 	static char buffer[BUFFER_SIZE];
 	static size_t buffer_pos;
