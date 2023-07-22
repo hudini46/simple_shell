@@ -1,169 +1,66 @@
 #include "shell.h"
 
 /**
- * input_buf - buffers chained commandds
- * @info: parameter struct
- * @buf: address of buffer
- * @len: address of len var
- *
- * Return: bytes read
+ * getline - Read a line of input from thee user.
+ * Return: The line of input entered by thee user.
  */
-ssize_t input_buf(info_t *info, char **buf, size_t *len)
+char *getline()
 {
-	ssize_t r = 0;
-	size_t len_p = 0;
+	static char buffer[BUFFER_SIZE];
+	static size_t buffer_pos;
+	static ssize_t chars_read;
+	char *line = NULL;
+	size_t line_len = 0;
+	char current_char;
 
-	if (!*len) /* if nothing left in the buffer, fill it */
+	while (1)
 	{
-		/*bfree((void **)info->cmd_buf);*/
-		free(*buf);
-		*buf = NULL;
-		signal(SIGINT, sigintHandler);
-#if USE_GETLINE
-		r = getline(buf, &len_p, stdin);
-#else
-		r = _getline(info, buf, &len_p);
-#endif
-		if (r > 0)
+		if (buffer_pos >= (size_t)chars_read)
 		{
-			if ((*buf)[r - 1] == '\n')
+			chars_read = read(STDIN_FILENO, buffer, BUFFER_SIZE);
+			buffer_pos = 0;
+			if (chars_read == 0)
 			{
-				(*buf)[r - 1] = '\0';
-				r--;
-			}
-			info->linecount_flag = 1;
-			remove_comments(*buf);
-			build_history_list(info, *buf, info->histcount++);
-			{
-				*len = r;
-				info->cmd_buf = buf;
-			}
-		}
-	}
-	return (r);
-}
-
-/**
- * get_input - gets a line witjout the newline
- * @info: parameter struct
- *
- * Return: bytes read
- */
-ssize_t get_input(info_t *info)
-{
-	static char *buf; /* the ';' command chain buffer */
-	static size_t i, j, len;
-	ssize_t r = 0;
-	char **buf_p = &(info->arg), *p;
-
-	_putchar(BUF_FLUSH);
-	r = input_buf(info, &buf, &len);
-	if (r == -1)
-		return (-1);
-	if (len)
-	{
-		j = i;
-		p = buf + i;
-
-		check_chain(info, buf, &j, i, len);
-		while (j < len)
-		{
-			if (is_chain(info, buf, &j))
+				if (line_len == 0)
+				{
+					putchar('\n');
+					return (NULL);
+				}
 				break;
-			j++;
+			}
+			else if (chars_read < 0)
+			{
+				perror("read");
+				exit(EXIT_FAILURE);
+			}
 		}
 
-		i = j + 1;
-		if (i >= len)
+		current_char = buffer[buffer_pos++];
+
+		if (current_char == '\n')
+			break;
+
+		line = realloc(line, line_len + 1);
+		if (line == NULL)
 		{
-			i = len = 0;
-			info->cmd_buf_type = CMD_NORM;
+			perror("realloc");
+			exit(EXIT_FAILURE);
 		}
 
-		*buf_p = p;
-		return (_strlen(p)); /* return length of current command */
+		line[line_len++] = current_char;
 	}
 
-	*buf_p = buf; /* else not a chain, pass back buffer from _getline() */
-	return (r); /* return length of buffer from _getline() */
+	if (line != NULL)
+	{
+		line = realloc(line, line_len + 1);
+		if (line == NULL)
+		{
+			perror("realloc");
+			exit(EXIT_FAILURE);
+		}
+		line[line_len] = '\0';
+	}
+
+	return (line);
 }
 
-/**
- * read_buf - reads a buffer
- * @info: parameter struct
- * @buf: buffer
- * @i: size
- *
- * Return: r
- */
-ssize_t read_buf(info_t *info, char *buf, size_t *i)
-{
-	ssize_t r = 0;
-
-	if (*i)
-		return (0);
-	r = read(info->readfd, buf, READ_BUF_SIZE);
-	if (r >= 0)
-		*i = r;
-	return (r);
-}
-
-/**
- * _getline - gets the next line of input from STDIN
- * @info: parameter structs
- * @ptr: address of pointer to buffer, prealocated or NULL
- * @length: size of preallocated ptr buffer if not NULL
- *
- * Return: s
- */
-int _getline(info_t *info, char **ptr, size_t *length)
-{
-	static char buf[READ_BUF_SIZE];
-	static size_t i, len;
-	size_t k;
-	ssize_t r = 0, s = 0;
-	char *p = NULL, *new_p = NULL, *c;
-
-	p = *ptr;
-	if (p && length)
-		s = *length;
-	if (i == len)
-		i = len = 0;
-
-	r = read_buf(info, buf, &len);
-	if (r == -1 || (r == 0 && len == 0))
-		return (-1);
-
-	c = _strchr(buf + i, '\n');
-	k = c ? 1 + (unsigned int)(c - buf) : len;
-	new_p = _realloc(p, s, s ? s + k : k + 1);
-	if (!new_p) /* MALLOC FAILURE! */
-		return (p ? free(p), -1 : -1);
-
-	if (s)
-		_strncat(new_p, buf + i, k - i);
-	else
-		_strncpy(new_p, buf + i, k - i + 1);
-
-	s += k - i;
-	i = k;
-	p = new_p;
-
-	if (length)
-		*length = s;
-	*ptr = p;
-	return (s);
-}
-
-/**
- * sigintHandler - blockss ctrl-C
- * @sig_num: the signal number
- *
- * Return: void
- */
-void sigintHandler(__attribute__((unused))int sig_num)
-{
-	_puts("\n");
-	_puts("$ ");
-	_putchar(BUF_FLUSH);
-}

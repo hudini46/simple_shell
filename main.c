@@ -19,7 +19,7 @@ int main(int argc, char **argv)
 		while (1)
 		{
 			print_prompt();
-			buffer = get_line();
+			buffer = getline();
 			if (buffer == NULL)
 			{
 				putchar('\n');
