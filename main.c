@@ -36,7 +36,7 @@ int main(int argc, char **argv)
 		size_t line_size = 0;
 		ssize_t chars_read;
 
-		while ((chars_read = bet_line(&line, &line_size, stdin)) != -1)
+		while ((chars_read = getline(&line, &line_size, stdin)) != -1)
 		{
 			if (chars_read > 0 && line[chars_read - 1] == '\n')
 				line[chars_read - 1] = '\0';
