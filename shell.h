@@ -30,7 +30,7 @@ void print_command_not_found_error(void);
 void print_malloc_error(void);
 void print_execvp_error(void);
 
-char *get_line();
+char *bet_line();
 
 void par_se(char *cmd, char *args[], int *arg_count);
 void ex_it(char *args[], int arg_count);
