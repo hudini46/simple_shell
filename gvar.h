@@ -5,11 +5,11 @@
 #include <sys/types.h>
 
 /* Declare program_name variable */
-extern char *program_name;
+char *program_name;
 
 /* Declare buffer variable */
-extern char *buffer;
-extern size_t bufsize;
-extern ssize_t nread;
+char *buffer = NULL;
+size_t bufsize = 0;
+ssize_t nread;
 
 #endif
