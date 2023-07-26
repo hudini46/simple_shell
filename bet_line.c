@@ -1,12 +1,29 @@
 #include "shell.h"
 
 /**
- * bet_line - Read a line of input from thee user.
- * Return: The line of input entered by thee user.
+ * read_input - Read input from the user into a buffer.
+ * @buffer: The buffer to store the input.
+ * @bufsize: The size of the buffer.
+ * Return: Number of characters read, or -1 on failure.
  */
-char *bet_line()
+ssize_t read_input(char *buffer, size_t bufsize)
 {
-	static char buffer[BUFFER_SIZE];
+	ssize_t chars_read = read(STDIN_FILENO, buffer, bufsize);
+	if (chars_read < 0)
+	{
+		perror("read");
+		exit(EXIT_FAILURE);
+	}
+	return (chars_read);
+}
+
+/**
+ * read_and_expand_line - Read and expand the line of input from the user.
+ * @buffer: The buffer to store the input.
+ * Return: The expanded line of input entered by the user.
+ */
+char *read_and_expand_line(char *buffer)
+{
 	static size_t buffer_pos;
 	static ssize_t chars_read;
 	char *line = NULL;
@@ -17,7 +34,7 @@ char *bet_line()
 	{
 		if (buffer_pos >= (size_t)chars_read)
 		{
-			chars_read = read(STDIN_FILENO, buffer, BUFFER_SIZE);
+			chars_read = read_input(buffer, BUFFER_SIZE);
 			buffer_pos = 0;
 			if (chars_read == 0)
 			{
@@ -27,11 +44,6 @@ char *bet_line()
 					return (NULL);
 				}
 				break;
-			}
-			else if (chars_read < 0)
-			{
-				perror("read");
-				exit(EXIT_FAILURE);
 			}
 		}
 
@@ -64,3 +76,13 @@ char *bet_line()
 	return (line);
 }
 
+/**
+ * bet_line - Read a line of input from the user.
+ * Return: The line of input entered by the user.
+ */
+char *bet_line()
+{
+	static char buffer[BUFFER_SIZE];
+
+	return (read_and_expand_line(buffer));
+}

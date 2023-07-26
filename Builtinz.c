@@ -1,7 +1,7 @@
 #include "shell.h"
 
 /**
- * set_env_var - Set  environmental variable.
+ * set_env_var - Set environmental variable.
  * @args: Array of command arguments.
  * @arg_count: Number of arguments.
  */
@@ -70,13 +70,15 @@ void cd(char *args[], int arg_count)
 	current_directory = getcwd(NULL, 0);
 	if (current_directory == NULL)
 	{
-		fprintf(stderr, "cd: Failed to get current directory: %s\n", strerror(errno));
+		fprintf(stderr, "cd: Failed to get current directory: %s\n",
+			strerror(errno));
 		return;
 	}
 
 	if (chdir(path) != 0)
 	{
-		fprintf(stderr, "cd: Failed to change directory to '%s': %s\n", path, strerror(errno));
+		fprintf(stderr, "cd: Failed to change directory to '%s': %s\n",
+			path, strerror(errno));
 	}
 	else
 	{
@@ -86,3 +88,4 @@ void cd(char *args[], int arg_count)
 
 	free(current_directory);
 }
+

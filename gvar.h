@@ -1,9 +1,15 @@
 #ifndef GVAR_H
 #define GVAR_H
 
-char *program_name; /* Declare program_name variable */
-char *buffer = NULL; /* Declare buffer variable */
-size_t bufsize = 0;
-ssize_t nread;
+#include <stddef.h>
+#include <sys/types.h>
+
+/* Declare program_name variable */
+extern char *program_name;
+
+/* Declare buffer variable */
+extern char *buffer;
+extern size_t bufsize;
+extern ssize_t nread;
 
 #endif
