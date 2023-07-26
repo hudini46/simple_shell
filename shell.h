@@ -1,13 +1,3 @@
-#ifndef SHELL_H
-#define SHELL_H
-
-
-#include <stdbool.h>
-#include <errno.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <stddef.h>
@@ -33,7 +23,7 @@ void print_execvp_error(void);
 char *bet_line();
 
 void par_se(char *cmd, char *args[], int *arg_count);
-void ex_it(char *args[], int arg_count);
+void ex_it(char *args[], int arg_count); // Updated function prototype
 void exe_com(char *args[], char *program_name);
 void set_env_var(char *args[], int arg_count);
 void unset_env_var(char *args[], int arg_count);
@@ -47,3 +37,4 @@ int _strcmp(char *s1, char *s2);
 int _atoi(char *s);
 
 #endif
+
