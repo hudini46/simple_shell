@@ -1,11 +1,9 @@
-/bin/ls
-echo "qwerty" | /bin/sh
-echo "qwerty" | /bin/../bin/sh
-echo "qwerty" | ./hsh
-echo "qwerty" | ./././hsh
-/bin/ls
-ls
-ls -l /tmp
+bin/ls
+pwd
+echo "Hello"
+ls -la
+/bin/ls -la /tmp
+id
 env
 ls /var ; ls /va
 ls /hbtn ; ls /var
@@ -20,8 +18,3 @@ ls /hbtn || ls /var
 ls /hbtn || ls /hbtn || ls /hbtn || ls /var
 ls /hbtn || ls /hbtn || ls /hbtn || ls /var || ls /var
 ls /var
-echo $?
-echo $$
-echo $PATH
-echo $$ # ls -la
-exit
