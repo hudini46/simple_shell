@@ -4,12 +4,7 @@
 #include <stddef.h>
 #include <sys/types.h>
 
-/* Declare program_name variable */
-char *program_name;
-
-/* Declare buffer variable */
-char *buffer = NULL;
-size_t bufsize = 0;
-ssize_t nread;
+/* Function prototypes */
+void some_function(void);
 
 #endif
