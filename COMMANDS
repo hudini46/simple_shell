@@ -3,8 +3,8 @@ pwd
 echo "Hello"
 ls -la
 /bin/ls -la /tmp
-id
 env
+id
 ls /var ; ls /va
 ls /hbtn ; ls /var
 ls /var ; ls /hbtn
